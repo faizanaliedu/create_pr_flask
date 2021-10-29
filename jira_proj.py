@@ -51,7 +51,7 @@ def home():
         try:
             summary, description = get_ticket_info_from_jira(jira)
 
-            link = create_pull_request(f"{jira}: {summary}", description, github, labels)
+            link = create_pull_request(f"{jira}: {summary}", f"{description} \n Jira Link: https://educative.atlassian.net/browse/{jira}", github, labels)
         except:
             return render_template("home.html", message = "Something went wrong")
 
