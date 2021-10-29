@@ -16,7 +16,7 @@ app = Flask(__name__)
 OPTIONS = {
  'server': 'https://educative.atlassian.net'
 }
-EDU_REPO_ID = 24544786
+EDU_REPO_ID = 422668454
 
 def get_ticket_info_from_jira(ticket_number):
     jira = JIRA(OPTIONS, basic_auth=(app.config['JIRA_USER'], app.config['JIRA_TOKEN']))
@@ -30,7 +30,7 @@ def create_pull_request(summary, description, head_branch, labels):
 
     desciption_template = f"## Description: \n\n {description} \n\n ### Migrations \n\n - None (Add if necessary, and add the run-migration label to the PR.) \n\n ### Author Checklist: \n\n Add an X between [] and remove whitespace to check off. \n\n - [ ] Tests have been added/updated. \n\n - [ ] Relevant documentation has been added/updated (add doc link if applicable). \n\n - [ ] Ran lighthouse tests and added the scores in PR description (if applicable). \n\n - [ ] Appropriate labels have been applied to the PR. Every PR should have at least one label."
 
-    pr = r.create_pull(title=summary, body=desciption_template, head=head_branch, base="master")
+    pr = r.create_pull(title=summary, body=desciption_template, head=head_branch, base="main")
 
     if labels:
         pr.set_labels(labels)
@@ -48,12 +48,12 @@ def home():
 
         link = ''
 
-        try:
-            summary, description = get_ticket_info_from_jira(jira)
+        # try:
+        summary, description = get_ticket_info_from_jira(jira)
 
-            link = create_pull_request(f"{jira}: {summary}", description, github, labels)
-        except:
-            return render_template("home.html", message = "Something went wrong")
+        link = create_pull_request(f"{jira}: {summary}", f"{description} \n https://educative.atlassian.net/browse/{jira}", github, labels)
+        # except:
+        #     return render_template("home.html", message = "Something went wrong")
 
         return render_template("home.html", message = "Successfully created PR.", href=link)
     
