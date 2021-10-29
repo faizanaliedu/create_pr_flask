@@ -16,7 +16,7 @@ app = Flask(__name__)
 OPTIONS = {
  'server': 'https://educative.atlassian.net'
 }
-EDU_REPO_ID = 24544786
+EDU_REPO_ID = 422668454
 
 def get_ticket_info_from_jira(ticket_number, jira_user, jira_api_key):
 	jira = JIRA(OPTIONS, basic_auth=(jira_user, jira_api_key))
@@ -35,19 +35,24 @@ def create_pull_request(git_token,summary, description, head_branch, labels, use
 	pr.set_labels(labels)
 	pr.add_to_assignees(user_name)
 
+    return pr.html
+
 @app.route("/", methods=["GET", "POST"])
 def home():
     if request.method == "POST":
         jira = request.form["jira"]
         github = request.form["github"]
         labels = request.form["labels"]
+
+        link = ''
+
         try:
             summary, description = get_ticket_info_from_jira(jira, app.config['JIRA_USER'], app.config['JIRA_TOKEN'])
-            create_pull_request(app.config['GITHUB_TOKEN'], f"{jira}: {summary}", description, github, labels, app.config['GITHUB_USER'])
+            link = create_pull_request(app.config['GITHUB_TOKEN'], f"{jira}: {summary}", description, github, labels, app.config['GITHUB_USER'])
         except:
             return render_template("base.html", message = "Something went wrong")
 
-        return render_template("base.html", message = "Successfully created PR.")
+        return render_template("base.html", message = f"Successfully created PR. Link: {link}")
     
     return render_template("base.html")
 
