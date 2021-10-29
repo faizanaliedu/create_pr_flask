@@ -16,7 +16,7 @@ app = Flask(__name__)
 OPTIONS = {
  'server': 'https://educative.atlassian.net'
 }
-EDU_REPO_ID = 422668454
+EDU_REPO_ID = 24544786
 
 def get_ticket_info_from_jira(ticket_number):
     jira = JIRA(OPTIONS, basic_auth=(app.config['JIRA_USER'], app.config['JIRA_TOKEN']))
