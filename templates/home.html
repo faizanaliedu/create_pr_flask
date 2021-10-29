@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% macro newComponent(text, link) -%}
+      <div class='container'>
+        <p>{{text}}</p>
+        {% if link %}
+          <a href={{link}} target="_blank"> Check it here </a> 
+        {% endif %}
+      </div>
+{%- endmacro %}
+
+{% block content %}
+<h1>Lets Create the PRs ...!!!</h1>
+<form action="{{url_for('home')}}" method="POST">
+  Enter Jira Ticker:<br>
+  <input type="text" name="jira" >
+  <div style="margin-top: 12px">
+  Enter Github Branch:<br>
+  <input type="text" name="github" >
+  <div style="margin-top: 12px">
+  Enter Labels:<br>
+  <input type="text" name="labels" >
+  <br><br>
+  <input type="submit" value="Create">
+</form>
+{% if message %}
+    {{ newComponent(message, href) }}
+{% endif %}
+{% endblock %}
