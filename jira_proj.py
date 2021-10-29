@@ -16,7 +16,7 @@ app = Flask(__name__)
 OPTIONS = {
  'server': 'https://educative.atlassian.net'
 }
-EDU_REPO_ID = 422668454
+EDU_REPO_ID = 24544786
 
 def get_ticket_info_from_jira(ticket_number):
     jira = JIRA(OPTIONS, basic_auth=(app.config['JIRA_USER'], app.config['JIRA_TOKEN']))
@@ -61,14 +61,12 @@ def home():
 
 @app.route("/all_prs", methods=["GET", "POST"])
 def all_prs():
+    prs = []
     if request.method == "POST":
-        g = Github(app.config['GITHUB_TOKEN'])
-        r = g.get_repo(EDU_REPO_ID)
-        user = app.config['GITHUB_USER']
-
-        prs = []
-
         try:
+            g = Github(app.config['GITHUB_TOKEN'])
+            r = g.get_repo(EDU_REPO_ID)
+            user = app.config['GITHUB_USER']
             for pull in r.get_pulls(state="open"):
                 if pull.user.login == user:
                     prs.append((pull.title, pull.html_url))
